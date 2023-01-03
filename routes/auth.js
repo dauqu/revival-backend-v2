@@ -20,6 +20,11 @@ router.post("/login", async (req, res) => {
         return res.json({ message: "Password is incorrect", status: "warning" });
     }
 
+    // check if user is blocked
+    if (findUser.blocked === true) {
+        return res.json({ message: "Your account is blocked", status: "warning" });
+    }
+
     // signing token for 5 days 
     const token = jwt.sign({ id: findUser._id }, process.env.JWT_SECRET, { expiresIn: "5d" });
 

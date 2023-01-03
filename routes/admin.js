@@ -3,6 +3,7 @@ const router = require('express').Router();
 const Admin = require('../models/adminSchema');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/userSchema');
 
 
 router.get('/', async (req, res) => {
@@ -85,6 +86,66 @@ router.post('/login', async (req, res) => {
         res.json({ status: "error", message: err.message })
     }
 })
+
+
+//update user block status by admin
+router.patch('/change-block/:id', async (req, res) => {
+    const token = req.cookies.token || req.headers['token'] || req.body.token;
+    try {
+        //check token
+        const check_token = jwt.verify(token, process.env.JWT_SECRET);
+        if (!check_token) {
+            return res.json({ status: "error", message: "Invalid token" })
+        }
+
+        //check admin
+        const check_admin = jwt.decode(token);
+        if (check_admin.role !== 'admin') {
+            return res.json({ status: "error", message: "You are not an admin" })
+        }
+        //get user
+        const user = await User.findByIdAndUpdate(req.params.id);
+        if (!user) {
+            return res.json({ status: "error", message: "User not found" })
+        }
+        // change block status 
+        user.blocked = !user.blocked;
+        await user.save();
+        res.json({ status: "success", message: "User block status updated successfully" })
+    } catch (error) {
+        res.json({ status: "error", message: error.message })
+    }
+})
+
+
+//delete user 
+router.delete('/delete-user/:id', async (req, res) => {
+    const token = req.cookies.token || req.headers['token'] || req.body.token;
+    try {
+
+        //check token
+        const check_token = jwt.verify(token, process.env.JWT_SECRET);
+        if (!check_token) {
+            return res.json({ status: "error", message: "Invalid token" })
+        }
+
+        //check admin
+        const check_admin = jwt.decode(token);
+        if (check_admin.role !== 'admin') {
+            return res.json({ status: "error", message: "You are not an admin" })
+        }
+        
+        //delete user
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) {
+            return res.json({ status: "error", message: "User not found" })
+        }
+        res.json({ status: "success", message: "User deleted successfully" })
+    } catch (error) {
+        res.json({ status: "error", message: error.message })
+    }
+})
+
 
 
 

@@ -98,6 +98,44 @@ router.patch('/', async (req, res) => {
     }
 })
 
+// update profile by admin
+router.patch('/:id', async (req, res) => {
+    try {
+        const token = req.cookies.token || req.headers['token'] || req.body.token;
+        const _id = req.params.id;
+        if (!token) {
+            return res.status(401).json({
+                message: 'Unauthorized',
+                status: "error"
+            })
+        }
+
+        const admin = jwt.verify(token, process.env.JWT_SECRET);
+        if(admin.role !== "admin"){
+            return res.status(401).json({
+                message: 'Unauthorized',
+                status: "error"
+            })
+        }
+
+        //update user profile
+        const updateUser = await User.findByIdAndUpdate(_id, req.body, { new: true });
+        const saveUser = await updateUser.save();
+
+        res.status(200).json({
+            message: 'Profile updated successfully',
+            user: saveUser,
+            status: "success"
+        })
+
+    } catch (error) {
+        return res.json({
+            message: error,
+            status: "error"
+        })
+    }
+})
+
 
 
 module.exports = router;
