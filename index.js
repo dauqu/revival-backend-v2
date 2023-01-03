@@ -48,6 +48,7 @@ app.use('/api/stream', require('./routes/stream'));
 
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/user', require('./routes/user'));
+app.use('/api/admin', require('./routes/admin'));
 
 
 
