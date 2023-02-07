@@ -2,8 +2,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
-
-
 // exress app 
 const app = express();
 
@@ -22,6 +20,7 @@ app.use(cors({
     origin: allowedOrigins,
     credentials: true
 }))
+
 
 // use json and cookie parser 
 app.use(express.json());
