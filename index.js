@@ -15,7 +15,7 @@ require('./config/connection');
 const port = process.env.PORT || 4000;
 
 // cors
-const allowedOrigins = ["http://localhost:3000", "https://revival-frontend.vercel.app", "https://revival-frontend-ru4m.vercel.app", "https://revival-dashboard.vercel.app"];
+const allowedOrigins = ["http://localhost:3000", "https://revival-frontend.vercel.app", "https://revival-frontend-ru4m.vercel.app", "https://revival-dashboard.vercel.app", "https://revivalplatform.co.za"];
 app.use(cors({
     origin: allowedOrigins,
     credentials: true
